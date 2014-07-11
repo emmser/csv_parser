@@ -3,7 +3,7 @@
 """Parse csv
 
 Usage:
-  csvParser.py <input_file> 
+  csvParser.py <input_file> [--base=PATH]
 
 Arguments:
   <input_file>          input file, TotalSampleList sheet Look Up, downloaded as csv
@@ -11,21 +11,25 @@ Arguments:
 Options:
   -h --help             Show this screen
   -v --version          Show version
+  -b --base=PATH        Path to flowcell folder
+  						[default: /Users/emmasernstad/Scripts/OUTBOX]
+
 
 """
 from docopt import docopt # help message module
 import csv     
 import sys      
 import os
-import re  			
+import re  
+		
 
 def main(args): # needed for the use of docopt
 	
 	# opens the csv file given as argument
-	with open(sys.argv[1], 'r') as file:
+	with open(args['<input_file>'], 'r') as file:
 		
 		#jumps over the 11 first lines in the opened csv
-		for i in xrange(11):
+		for i in xrange(8):
 			file.readline()
 
 		#the header is saved in header
@@ -53,10 +57,13 @@ def main(args): # needed for the use of docopt
 							data[fcid].append(fieldstrip)							
 										
 			#For every key in data (fd-id), create a file named [fc-id].csv and write the header and the rows for that flowcell
+			#base = path(args['--base'])
 			for key in data:
-				if not os.path.exists("../csv_outputfiles"):
-					os.makedirs("../csv_outputfiles")
-				with open("../csv_outputfiles/"+"sampleList-"+project_ids+"-"+key+".csv","w") as sampleList:
+				if not os.path.exists(args['--base']+"/Project_"+project_ids+"/"+key):
+					os.makedirs("/Users/emmasernstad/Scripts/OUTBOX/"+"Project_"+project_ids+"/"+key)
+					print "Folder doesn't exist for:"+key
+					return
+				with open(args['--base']+"/Project_"+project_ids+"/"+key+"/"+"sampleList-"+project_ids+"-"+key+".csv","w") as sampleList:
 					sampleList.write(header)
 					writer = csv.writer(sampleList)
 					writer.writerows(data[key])
