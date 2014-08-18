@@ -29,7 +29,7 @@ def main(args): # needed for the use of docopt
 	with open(args['<input_file>'], 'r') as file:
 		
 		#jumps over the 11 first lines in the opened csv
-		for i in xrange(8):
+		for i in xrange(11):
 			file.readline()
 
 		#the header is saved in header
